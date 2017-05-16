@@ -1,41 +1,47 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Http } from '@angular/http';
-
-import { expiringCacher } from './expiry-cacher';
-
+import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/let';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/takeUntil';
-import { Observable } from 'rxjs/Observable';
+
+import { expiringCacher } from './expiry-cacher';
+import { ExpiringMessage } from './expiring-message';
 
 @Component({
   selector: 'app-root',
-  template: `
-  <h1>RxJS Expiring Cacher</h1>
-  <p>Look for output in browser console</p>
-  <ul>
-    <li *ngFor="let hero of heroes | async">{{hero.name}}</li>
-  </ul>
-
-  <pre>{{heroes | async | json}}</pre>
-  `
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit, OnDestroy {
   private onDestroy = new Subject();
 
-  heroes: any; // Observable<any[]>;
+  heroes: Observable<any[]>;
+  message: ExpiringMessage;
 
   constructor(private http: Http) { }
 
   ngOnInit() {
     this.heroes = this.http.get('hero.json')
-      .map(res => res.json())
-      .let(expiringCacher);
+      .map(response => response.json())
+      .let(expiringCacher)
+      .map(response => {
+        this.message = response;
+        return response.data;
+      });
     // .takeUntil(this.onDestroy);
   }
 
   ngOnDestroy() {
     this.onDestroy.next();
+  }
+
+  refresh() {
+    console.log('Expiring and refreshing the data');
+  }
+
+  expire() {
+    console.log('Expiring the data, only');
   }
 }

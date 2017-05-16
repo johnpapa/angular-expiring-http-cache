@@ -1,8 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
-
 import 'rxjs/add/observable/timer';
-
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
@@ -13,6 +11,8 @@ import 'rxjs/add/operator/repeat';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/switchMap';
 import 'rxjs/add/operator/take';
+
+import { ExpiringMessage } from './expiring-message';
 
 const refreshDelay = 5000;  // interval between async calls
 /*
@@ -33,25 +33,30 @@ export const expiringCacher = (source: Observable<any>) => Observable
   .timer(0, refreshDelay)
   .switchMap(count =>
     source
-    // Todo: add error handling? Remove next logging line.
-    .do(res => console.log('asyncMethod call #' + count, res) )
+      // Todo: add error handling? Remove next logging line.
+      .do(response => console.log('asyncMethod call #' + count, response))
   )
+  .map(response => {
+    const message = new ExpiringMessage(response, new Date().getTime());
+    console.log('Package being delivered:', message);
+    return message;
+  })
   .share();
 
 
 ///////// Experiments
 
-// Does something async in random time < 1 second
-function asyncThing(count) {
-  return Observable.timer(Math.random() * 1000)
-    .do(() => console.log('asyncThing for ' + count))
-    .map(() => count);
-}
+// // Does something async in random time < 1 second
+// function asyncThing(count) {
+//   return Observable.timer(Math.random() * 1000)
+//     .do(() => console.log('asyncThing for ' + count))
+//     .map(() => count);
+// }
 
-const fooDelay = 5000; // interval between async calls
+// const fooDelay = 5000; // interval between async calls
 
-export const foo = Observable
-  .timer(0, refreshDelay)
-  .switchMap(count =>  asyncThing(count))
-  .share();
+// export const foo = Observable
+//   .timer(0, refreshDelay)
+//   .switchMap(count =>  asyncThing(count))
+//   .share();
 

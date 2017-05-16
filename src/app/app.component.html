@@ -1,3 +1,12 @@
-<h1>
-  {{title}}
-</h1>
+<h1>RxJS Expiring Cacher</h1>
+<p>Look for output in browser console</p>
+<ul>
+  <li *ngFor="let hero of heroes | async">{{hero.name}}</li>
+</ul>
+<button (click)="expire()">Expire the Data</button>
+<button (click)="refresh()">Refresh the Data</button>
+
+<div>
+  <pre>{{heroes | async | json}}</pre>
+  <pre>{{message | json}}</pre>
+</div>
