@@ -42,21 +42,3 @@ export const expiringCacher = (source: Observable<any>) => Observable
     return message;
   })
   .share();
-
-
-///////// Experiments
-
-// // Does something async in random time < 1 second
-// function asyncThing(count) {
-//   return Observable.timer(Math.random() * 1000)
-//     .do(() => console.log('asyncThing for ' + count))
-//     .map(() => count);
-// }
-
-// const fooDelay = 5000; // interval between async calls
-
-// export const foo = Observable
-//   .timer(0, refreshDelay)
-//   .switchMap(count =>  asyncThing(count))
-//   .share();
-
