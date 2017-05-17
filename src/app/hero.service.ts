@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/do';
@@ -9,7 +8,7 @@ import 'rxjs/add/operator/map';
 
 import { Hero } from './hero';
 
-export interface cachedResponse<T> {
+export interface CachedResponse<T> {
   fetching: boolean;
   expiration: number;
   data: T;
@@ -20,7 +19,7 @@ export class HeroService {
 
   private expireAfter = 5000; // data expire after this period of time (ms).
 
-  private heroesSubject = new BehaviorSubject<cachedResponse<Hero[]>>({
+  private heroesSubject = new BehaviorSubject<CachedResponse<Hero[]>>({
     fetching: false,
     expiration: 0,
     data: undefined
@@ -32,7 +31,7 @@ export class HeroService {
 
   constructor(private http: Http) { }
 
-  getHeroes(): Observable<cachedResponse<Hero[]>> {
+  getHeroes(): Observable<CachedResponse<Hero[]>> {
     this.heroesSubject.do(pkg => {
       if (pkg.fetching) {
         console.log('fetching...');
@@ -40,7 +39,8 @@ export class HeroService {
         console.log('returned cached because within expiration window');
       } else {
         // emit a new package with the same cached data that shows we're fetching
-        this.heroesSubject.next({...pkg, ...{fetching: true}});
+        const args = { ...pkg, ...{ fetching: true } };
+        this.heroesSubject.next(args);
 
         // then get data from the server
         this.http.get(this.url).map(res => res.json())

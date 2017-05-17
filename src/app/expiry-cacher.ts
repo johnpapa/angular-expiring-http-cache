@@ -2,15 +2,9 @@ import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
-import 'rxjs/add/operator/mergeAll';
-import 'rxjs/add/operator/multicast';
-import 'rxjs/add/operator/publish';
-import 'rxjs/add/operator/repeat';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/switchMap';
-import 'rxjs/add/operator/take';
 
 import { ExpiringMessage } from './expiring-message';
 

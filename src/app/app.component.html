@@ -1,19 +1,10 @@
 <h1>RxJS Expiring Cacher</h1>
 <p>Look for output in browser console</p>
 
-<h3>Hero Pkg</h3>
+<h3>Hero Package</h3>
 <ul>
   <li *ngFor="let hero of heroes | async">{{hero.name}}</li>
 </ul>
-<pre>{{heroPkg | async | json }}</pre>
-<button (click)="refreshPkg()">Refresh the HeroPkg</button>
+<pre>{{heroPackage | async | json }}</pre>
+<button (click)="refreshPackage()">Refresh the HeroPkg</button>
 <span>Since last refresh: {{counter | async}} seconds</span>
-
-<!--<h3>Original</h3>
-<button (click)="expire()">Expire the Data</button>
-<button (click)="refresh()">Refresh the Data</button>
-<div>
-  <pre>{{heroes | async | json}}</pre>
-  <pre>{{message | json}}</pre>
-</div>-->
-
