@@ -8,7 +8,6 @@ import { CacherService } from './cacher.service';
 
 @Injectable()
 export class HeroService {
-
   private heroCachePackage = new CachePackage();
   private expireAfter = 5000; // data expire after this period of time (ms).
   private heroesSubject = new BehaviorSubject<CachedResponse<Hero[]>>(this.heroCachePackage);

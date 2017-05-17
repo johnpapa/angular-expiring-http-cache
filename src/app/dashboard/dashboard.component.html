@@ -1,0 +1,7 @@
+<h3>Hero Package - Dashboard</h3>
+<ul>
+  <li *ngFor="let hero of heroes | async">{{hero.name}}</li>
+</ul>
+<pre>{{heroPackage | async | json }}</pre>
+<button (click)="refreshPackage()">Refresh the HeroPkg</button>
+<span>Since last refresh: {{counter | async}} seconds</span>
