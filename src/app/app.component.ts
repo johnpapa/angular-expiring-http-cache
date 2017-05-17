@@ -47,6 +47,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   refreshPackage() {
     // The next line alone is sufficient to refresh expired heroes
+    // We use a new pkg constant just to show the differences in the console.log, below
     const pkg = this.heroService.getHeroes();
 
     // To make a point ...
