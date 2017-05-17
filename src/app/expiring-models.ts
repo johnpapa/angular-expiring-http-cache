@@ -1,8 +1,5 @@
-export interface CachedResponse<T> {
-  fetching: boolean;
-  expiration: number;
-  data: T;
-}
+import { CachedResponse } from './cacher';
+export { CachedResponse }; // for now.
 
 export class ExpiringMessage {
   constructor(public data: Array<Object>, public stamp: number) { }
@@ -11,6 +8,3 @@ export class ExpiringMessage {
 export class CachePackage {
   constructor(public fetching: boolean = false, public expiration = 0, public data = undefined) { }
 }
-
-// export let cachePackageFactory = () => new CachePackage();
-
