@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/switchMap';
 
-import { ExpiringMessage } from './expiring-message';
+import { ExpiringMessage } from './expiring-models';
 
 const refreshDelay = 5000;  // interval between async calls
 /*

@@ -1,27 +1,20 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-// import { Http } from '@angular/http';
-
-import { Hero } from './hero';
-import { HeroService, CachedResponse } from './hero.service';
-
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/map';
 
+//////////////
 // These observable imports are only needed for the counter
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/repeat';
+//////////////
 
-// Old stuff
-// None of these observable imports are needed when using HeroService
-// import 'rxjs/add/operator/let';
-
-
-// import { expiringCacher } from './expiry-cacher';
-// import { ExpiringMessage } from './expiring-message';
+import { CachedResponse } from './expiring-models';
+import { Hero } from './hero';
+import { HeroService } from './hero.service';
 
 @Component({
   selector: 'app-root',
