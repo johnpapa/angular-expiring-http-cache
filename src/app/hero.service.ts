@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 import { Hero } from './hero';
@@ -16,7 +15,7 @@ export class HeroService {
 
   private url = 'hero.json';
 
-  constructor(private http: Http, private cacherService: CacherService) { }
+  constructor(private cacherService: CacherService) { }
 
   getHeroes() {
     return this.cacherService.getData(this.url, this.heroesSubject, this.expireAfter);
