@@ -4,8 +4,10 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 
 import { Cacher } from './cacher';
-import { Hero } from './hero';
-export { Hero }
+
+export class Hero {
+  constructor(public name: string) { }
+}
 
 @Injectable()
 export class HeroService {
