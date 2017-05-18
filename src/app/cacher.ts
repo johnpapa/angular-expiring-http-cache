@@ -11,13 +11,12 @@ export class CachedResponse<T> {
 }
 
 export class Cacher<T> {
-  static defaultExpirationWindow = 5000;
-  static verbose = false;
+  static defaultExpirationWindow = 30000;
+  static verbose = true;
 
   observable: Observable<CachedResponse<T>>;
 
   refresh: () => void;
-
 
   static create<T>(
     source: Observable<T>,
@@ -35,11 +34,11 @@ export class Cacher<T> {
       subject
         .do(pkg => {
           if (pkg.fetching || pkg.expiration > Date.now()) {
-            if (this.verbose) {
-              pkg.fetching ?
-                console.log('Fetching (so we\'ll exit and wait) ...') :
-                console.log('Using cached data ...');
-            }
+            // if (this.verbose) {
+            //   pkg.fetching ?
+            //     console.log('Fetching (so we\'ll exit and wait) ...') :
+            //     console.log('Using cached data ...', Date.now());
+            // }
             return;
           }
 
@@ -48,18 +47,23 @@ export class Cacher<T> {
 
           source
             .first() // ensure only execute source once
-            .subscribe(
-            data => {
+            .subscribe(data => {
               const newPkg = new CachedResponse<T>(data, Date.now() + expireAfter);
-              if (this.verbose) { console.log('Fetched fresh data', newPkg); }
+              this.verbose && console.log('fetching fresh data', newPkg);
               return subject.next(newPkg);
             },
-            error => subject.next({ ...pkg, ...{ fetching: false, error } })
+            error => subject.next({ ...pkg, ...{ fetching: false, error } }),
+            () => this.verbose && console.log('fetch completed')
             );
         })
         // execute do() only once; the returned value is irrelevant
         .first()
-        .subscribe();
+        .subscribe(
+          x => this.verbose && console.log('refresh next', x),
+          null,
+          () => this.verbose && console.log('refresh completed')
+        );
+    // .subscribe(null, null, () => this.verbose && console.log('refresh completed'));
 
     return {
       refresh,

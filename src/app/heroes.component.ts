@@ -1,25 +1,42 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
-import { Hero, HeroService } from './hero.service';
+import { Hero, DataService } from './data.service';
 
 @Component({
   selector: 'app-heroes',
   template: `
-    <h2>Heroes Heroes</h2>
-    <i>Does not refresh when created.</i>
-    <ul>
-      <li *ngFor="let hero of heroes | async">{{hero.name}}</li>
-    </ul>
+  <ng-template #noHeroes>
+    <md-progress-bar class="progress" color="accent" mode="indeterminate"></md-progress-bar>
+  </ng-template>
+
+  <div *ngIf="heroes;else noHeroes">
+    <md-list>
+      <h2 md-header>{{title}}</h2>
+      <md-list-item *ngFor="let hero of heroes"
+        [class.selected]="hero===selectedHero"
+        (click)="selectHero(hero)">
+        <p md-line>
+          <span>{{hero.name}}</span>
+        </p>
+      </md-list-item>
+    </md-list>
+  </div>
   `
 })
 export class HeroesComponent implements OnInit {
-  heroes: Observable<Hero[]>;
+  title = 'Heroes';
+  heroes: Hero[];
+  selectedHero: Hero;
 
-  constructor(private heroService: HeroService) { }
+  constructor(private dataService: DataService) { }
 
   ngOnInit() {
-    // Does not refresh!
-    this.heroes = this.heroService.heroes.map(pkg => pkg.data);
+    this.dataService.getHeroes()
+      .subscribe(pkg => this.heroes = pkg.data);
+  }
+
+  selectHero(hero: Hero) {
+    this.selectedHero = hero;
   }
 }
