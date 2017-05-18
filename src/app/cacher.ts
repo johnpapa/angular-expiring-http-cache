@@ -14,9 +14,20 @@ export class Cacher<T> {
   static defaultExpirationWindow = 30000;
   static verbose = true;
 
-  observable: Observable<CachedResponse<T>>;
 
-  refresh: () => void;
+/**
+ * Returns the observable of cached values.
+ * It also initiates a fetch if the cached value expired.
+ * Can force a fetch even if the cached value has not expired.
+ *
+ * @param {boolean} [force=false] forces a fetch that updates the cached value.
+ */
+  get: (forceFetch?: boolean) => void;
+
+/**
+ *  Returns the observable of cached values (which some future call of `get` will update)
+ */
+  getCached: () => Observable<CachedResponse<T>>;
 
   static create<T>(
     source: Observable<T>,
@@ -30,10 +41,10 @@ export class Cacher<T> {
 
     // execute do() once for its potential side-effect:
     // running source again once and updating the subject with its value
-    const refresh = () =>
+    const get = (force = false) =>
       subject
         .do(pkg => {
-          if (pkg.fetching || pkg.expiration > Date.now()) {
+          if (pkg.fetching || (!force && pkg.expiration > Date.now())) {
             log(pkg.fetching ? 'Fetching ...' : 'Using cached data');
             return;
           }
@@ -54,11 +65,15 @@ export class Cacher<T> {
         })
         // execute do() only once; the returned value is irrelevant
         .first()
-        .subscribe(null, null, () => log('refresh completed'));
+        .subscribe(
+          null, // x => log('get next', x),
+          null,
+          () => log('get completed')
+        );
 
     return {
-      refresh,
-      observable: subject.asObservable()
+      get,
+      getCached: () => subject
     };
   }
 }

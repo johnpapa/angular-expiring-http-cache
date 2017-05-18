@@ -13,6 +13,7 @@ import { Hero, DataService } from './data.service';
   <div *ngIf="heroes;else noHeroes">
     <md-list>
       <h2 md-header>{{title}}</h2>
+      <button class="md-button" (click)="refresh()">Refresh now</button>
       <md-list-item *ngFor="let hero of heroes"
         [class.selected]="hero===selectedHero"
         (click)="selectHero(hero)">
@@ -34,6 +35,10 @@ export class HeroesComponent implements OnInit {
   ngOnInit() {
     this.dataService.getHeroes()
       .subscribe(pkg => this.heroes = pkg.data);
+  }
+
+  refresh() {
+    this.dataService.getHeroes(true);
   }
 
   selectHero(hero: Hero) {
