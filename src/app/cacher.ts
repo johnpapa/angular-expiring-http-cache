@@ -52,7 +52,7 @@ export class Cacher<T> {
             data => {
               const newPkg = new CachedResponse<T>(data, Date.now() + expireAfter);
               if (this.verbose) { console.log('Fetched fresh data', newPkg); }
-              return subject.next(newPkg)
+              return subject.next(newPkg);
             },
             error => subject.next({ ...pkg, ...{ fetching: false, error } })
             );

@@ -11,7 +11,7 @@ import { CachedResponse } from './cacher';
 import { Hero, HeroService } from './hero.service';
 
 @Component({
-  selector: 'cache-counter',
+  selector: 'app-cache-counter',
   template: `
     <h3>Hero Package</h3>
     <pre>{{heroPackage | async | json }}</pre>

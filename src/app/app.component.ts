@@ -11,7 +11,7 @@ import { Component } from '@angular/core';
     <hr>
     <router-outlet></router-outlet>
     <hr>
-    <cache-counter></cache-counter>
+    <app-cache-counter></app-cache-counter>
   `
 })
 export class AppComponent { }
