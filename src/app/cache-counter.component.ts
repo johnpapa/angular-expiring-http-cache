@@ -8,37 +8,38 @@ import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/repeat';
 
 import { CachedResponse } from './cacher';
-import { Hero, HeroService } from './hero.service';
+import { Hero, DataService } from './data.service';
 
 @Component({
   selector: 'app-cache-counter',
   template: `
-    <h3>Hero Package</h3>
-    <pre>{{heroPackage | async | json }}</pre>
-
     <div>
-      <button (click)="refreshPackage()">Refresh the hero package</button>
-      <span>Since last refresh: {{counter | async}} seconds</span>
+      <h3>Hero Package</h3>
+      <pre>{{heroPackage | async | json }}</pre>
+
+      <div>
+        <button (click)="refreshPackage()">Refresh the hero package</button>
+        <span>Since last refresh: {{counter | async}} seconds</span>
+      </div>
     </div>
   `
 })
 export class CacheCounterComponent implements OnInit {
-
   counter: Observable<number>;
   heroPackage: Observable<CachedResponse<Hero[]>>;
   lastExp: number;
   private onResetCounter = new Subject();
 
-  constructor(private heroService: HeroService) { }
+  constructor(private dataService: DataService) { }
 
   ngOnInit() {
-    this.heroPackage = this.heroService.refreshHeroes();
+    this.heroPackage = this.dataService.getHeroes();
 
     // Time since last actual refresh
     this.counter = Observable.timer(0, 1000).takeUntil(this.onResetCounter).repeat();
 
     // All of the following nonsense is just about detecting
-    // when the heroService actually fetches again
+    // when the dataService actually fetches again
     // in order to reset the counter showing time since last actual refresh
     this.heroPackage
       .do(p => this.lastExp || (this.lastExp = p.expiration))
@@ -47,6 +48,6 @@ export class CacheCounterComponent implements OnInit {
   }
 
   refreshPackage() {
-    this.heroService.refreshHeroes();
+    this.dataService.getHeroes();
   }
 }
