@@ -7,14 +7,22 @@ import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/takeUntil';
 import 'rxjs/add/operator/repeat';
 
-import { CachedResponse } from '../cacher';
-import { Hero, HeroService } from '../hero.service';
+import { CachedResponse } from './cacher';
+import { Hero, HeroService } from './hero.service';
 
 @Component({
-  selector: 'hero-counter',
-  templateUrl: './counter.component.html'
+  selector: 'cache-counter',
+  template: `
+    <h3>Hero Package</h3>
+    <pre>{{heroPackage | async | json }}</pre>
+
+    <div>
+      <button (click)="refreshPackage()">Refresh the hero package</button>
+      <span>Since last refresh: {{counter | async}} seconds</span>
+    </div>
+  `
 })
-export class CounterComponent implements OnInit {
+export class CacheCounterComponent implements OnInit {
 
   counter: Observable<number>;
   heroPackage: Observable<CachedResponse<Hero[]>>;

@@ -4,15 +4,15 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { CounterComponent } from './counter/counter.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { HeroesComponent } from './heroes/heroes.component';
+import { CacheCounterComponent } from './cache-counter.component';
+import { DashboardComponent } from './dashboard.component';
+import { HeroesComponent } from './heroes.component';
 import { HeroService } from './hero.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CounterComponent,
+    CacheCounterComponent,
     DashboardComponent,
     HeroesComponent
   ],
