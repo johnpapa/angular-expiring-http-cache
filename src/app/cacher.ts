@@ -4,11 +4,10 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/first';
 
 export class CachedResponse<T> {
-  constructor(
-    public data: T,
-    public fetching: boolean = false,
-    public expiration: number = 0,
-    public error?: any) { }
+  error: any = undefined;
+  fetching = false;
+
+  constructor(public data: T, public expiration: number = 0) { }
 }
 
 export class Cacher<T> {
@@ -51,7 +50,7 @@ export class Cacher<T> {
             .first() // ensure only execute source once
             .subscribe(
             data => {
-              const newPkg = new CachedResponse<T>(data, false, Date.now() + expireAfter);
+              const newPkg = new CachedResponse<T>(data, Date.now() + expireAfter);
               if (this.verbose) { console.log('Fetched fresh data', newPkg); }
               return subject.next(newPkg)
             },
