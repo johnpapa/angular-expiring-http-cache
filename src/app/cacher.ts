@@ -38,7 +38,7 @@ export class Cacher<T> {
             return;
           }
 
-          // emit a new package with the same cached data that shows we're fetching
+          // emit the same cached data but show we're fetching
           subject.next({ ...pkg, ...{ fetching: true } });
 
           source
