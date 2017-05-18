@@ -4,15 +4,16 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
-import { HeroService } from './hero.service';
-import { CacherService } from './cacher.service';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { AppRoutingModule } from './app-routing.module';
+import { CounterComponent } from './counter/counter.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { HeroesComponent } from './heroes/heroes.component';
+import { HeroService } from './hero.service';
 
 @NgModule({
   declarations: [
     AppComponent,
+    CounterComponent,
     DashboardComponent,
     HeroesComponent
   ],
@@ -22,7 +23,7 @@ import { HeroesComponent } from './heroes/heroes.component';
     HttpModule,
     AppRoutingModule
   ],
-  providers: [HeroService, CacherService],
+  providers: [HeroService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
