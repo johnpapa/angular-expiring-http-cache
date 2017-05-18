@@ -54,18 +54,13 @@ export class Cacher<T> {
         })
         // execute do() only once; the returned value is irrelevant
         .first()
-        .subscribe(
-          null, // x => log('refresh next', x),
-          null,
-          () => log('refresh completed')
-        );
+        .subscribe(null, null, () => log('refresh completed'));
 
     return {
       refresh,
       observable: subject.asObservable()
     };
   }
-
 }
 
 function log(...args) {
