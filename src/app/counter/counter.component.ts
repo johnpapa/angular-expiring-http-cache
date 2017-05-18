@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-
-// These observable imports are only needed for the counter
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/operator/do';
