@@ -34,11 +34,7 @@ export class Cacher<T> {
       subject
         .do(pkg => {
           if (pkg.fetching || pkg.expiration > Date.now()) {
-            // if (this.verbose) {
-            //   pkg.fetching ?
-            //     console.log('Fetching (so we\'ll exit and wait) ...') :
-            //     console.log('Using cached data ...', Date.now());
-            // }
+            log(pkg.fetching ? 'Fetching ...' : 'Using cached data');
             return;
           }
 
@@ -49,25 +45,29 @@ export class Cacher<T> {
             .first() // ensure only execute source once
             .subscribe(data => {
               const newPkg = new CachedResponse<T>(data, Date.now() + expireAfter);
-              this.verbose && console.log('fetching fresh data', newPkg);
+              log('Fetching fresh data ...', newPkg);
               return subject.next(newPkg);
             },
             error => subject.next({ ...pkg, ...{ fetching: false, error } }),
-            () => this.verbose && console.log('fetch completed')
+            () => log('Fetch completed')
             );
         })
         // execute do() only once; the returned value is irrelevant
         .first()
         .subscribe(
-          x => this.verbose && console.log('refresh next', x),
+          null, // x => log('refresh next', x),
           null,
-          () => this.verbose && console.log('refresh completed')
+          () => log('refresh completed')
         );
-    // .subscribe(null, null, () => this.verbose && console.log('refresh completed'));
 
     return {
       refresh,
       observable: subject.asObservable()
     };
   }
+
+}
+
+function log(...args) {
+  if (Cacher.verbose) { console.log.apply(null, args); }
 }
