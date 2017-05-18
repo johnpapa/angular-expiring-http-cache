@@ -14,6 +14,7 @@ export class HeroService {
 
   constructor(private http: Http) {
     const source = this.http.get(this.url).map(res => res.json());
+    Cacher.verbose = false; // So we can toggle console logs
     this.heroesCacher = Cacher.create<Hero[]>(source);
   }
 
