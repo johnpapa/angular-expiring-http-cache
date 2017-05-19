@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
 
 import { Villain, DataService } from './data.service';
 
@@ -24,15 +25,21 @@ import { Villain, DataService } from './data.service';
     </div>
   `
 })
-export class VillainsComponent implements OnInit {
+export class VillainsComponent implements OnInit, OnDestroy {
   title = 'Villains';
   villains: Villain[];
   selectedVillain: Villain;
+  private subscription: Subscription;
 
   constructor(private dataService: DataService) { }
 
   ngOnInit() {
-    this.dataService.getVillains().subscribe(villains => this.villains = villains);
+    this.subscription = this.dataService.getVillains()
+      .subscribe(villains => this.villains = villains);
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   selectVillain(villain: Villain) {
