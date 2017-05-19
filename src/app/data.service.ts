@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
+import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 
@@ -28,6 +29,7 @@ export class DataService {
     Cacher.verbose = true; // So we can toggle console logs
 
     const villainSource = <Observable<Villain[]>>this.http.get(`/villains.json`)
+      .delay(5000) // simulate latency
       .map((response: Response) => response.json());
 
     const heroSource = <Observable<Hero[]>>this.http.get(`/heroes.json`)

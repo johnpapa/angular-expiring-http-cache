@@ -59,6 +59,7 @@ export class Cacher<T> {
    */
   get(force = false): Observable<CachedResponse<T>> {
     this.subject
+      .first() // execute only once
       .do(cr => {
         if (cr.fetching) {
           log('Fetching ...');
@@ -68,7 +69,6 @@ export class Cacher<T> {
           log('Using cached data');
         }
       })
-      .first() // execute do() only once
       .subscribe(null, null, () => log('get.do() completed'));
 
     return this.cache;
