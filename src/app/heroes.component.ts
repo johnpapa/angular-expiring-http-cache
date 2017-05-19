@@ -37,7 +37,7 @@ export class HeroesComponent implements OnInit {
   }
 
   refresh() {
-    this.dataService.getHeroes(true);
+    this.dataService.refreshHeroes();
   }
 
   selectHero(hero: Hero) {

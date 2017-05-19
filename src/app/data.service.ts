@@ -51,6 +51,10 @@ export class DataService {
     return this.heroCacher.cache;
   }
 
+  refreshHeroes() {
+    this.getHeroes(true);
+  }
+
   getVillains(force = false) {
     this.countdownService.startVillainCounter(this.villainCacher);
     this.villainCacher.update(force);
