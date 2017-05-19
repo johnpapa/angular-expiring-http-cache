@@ -3,6 +3,8 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/first';
 
+/////// CachedResponse<T> ////////
+
 export class CachedResponse<T> {
   error: any = undefined;
   fetching = false;
@@ -10,24 +12,11 @@ export class CachedResponse<T> {
   constructor(public data: T, public expiration: number = 0) { }
 }
 
+/////// Cacher ////////
+
 export class Cacher<T> {
   static defaultExpirationWindow = 30000;
   static verbose = true;
-
-
-/**
- * Returns the observable of cached values.
- * It also initiates a fetch if the cached value expired.
- * Can force a fetch even if the cached value has not expired.
- *
- * @param {boolean} [force=false] forces a fetch that updates the cached value.
- */
-  get: (forceFetch?: boolean) => void;
-
-/**
- *  Returns the observable of cached values (which some future call of `get` will update)
- */
-  getCached: () => Observable<CachedResponse<T>>;
 
   static create<T>(
     source: Observable<T>,
@@ -71,11 +60,25 @@ export class Cacher<T> {
           () => log('get completed')
         );
 
-    return {
-      get,
-      getCached: () => subject
-    };
+    return new Cacher(get, () => subject);
   }
+
+  private constructor(
+    /**
+     * Returns the observable of cached values.
+     * It also initiates a fetch if the cached value expired.
+     * Can force a fetch even if the cached value has not expired.
+     *
+     * @param {boolean} [force=false] forces a fetch that updates the cached value.
+     */
+    public readonly get: (forceFetch?: boolean) => void,
+
+    /**
+     *  Returns the observable of cached values (which some future call of `get` will update)
+     */
+    public readonly getCached: () => Observable<CachedResponse<T>>
+  ) { }
+
 }
 
 function log(...args) {
