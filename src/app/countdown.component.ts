@@ -9,8 +9,8 @@ import { DataService } from './data.service';
   template: `
       <div class="counter">
         <button  md-button (click)="force()">Refresh All</button>
-        <span fxFlex="grow">Caching: heroes for {{heroCountDown | async}} s,</span>
-        <span fxFlex>Caching villains for {{villainCountDown | async}} s</span>
+        <span fxFlex="grow">Caching heroes for {{heroCountDown | async}} s,</span>
+        <span fxFlex>villains for {{villainCountDown | async}} s</span>
       </div>
   `
 })

@@ -3,9 +3,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
 import 'rxjs/add/observable/timer';
-
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/repeat';
@@ -21,8 +19,8 @@ export class CountDownService implements OnDestroy {
   private heroCountDownStarted = false;
   private villainCountDownStarted = false;
 
-  heroCountDown = new ReplaySubject<number>(1);
-  villainCountDown = new ReplaySubject<number>(1);
+  heroCountDown = new BehaviorSubject(0);
+  villainCountDown = new BehaviorSubject(0);
 
   private heroCountDownResetSubject = new Subject();
   private villainCountDownResetSubject = new Subject();
