@@ -7,7 +7,7 @@ import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/map';
 
 import { Cacher } from './cacher';
-import { onDemandCache } from './caching-fns';
+import { createOnDemandCache } from './caching-fns';
 
 import { CountDownService } from './countdown.service';
 

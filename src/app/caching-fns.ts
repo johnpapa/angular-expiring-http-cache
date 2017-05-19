@@ -1,7 +1,6 @@
 import { Observable } from 'rxjs/Observable';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import 'rxjs/add/observable/timer';
-
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/first';
@@ -20,7 +19,7 @@ export const defaultExpirationPeriod = 3000;
  * @param {Observable<T>} source
  * @param {Observable<any>} next
  */
-export function cache<T>(source: Observable<T>, next: Observable<any>) {
+export function createCache<T>(source: Observable<T>, next: Observable<any>) {
   const cacheSubject = new ReplaySubject(1);
 
   // get from the source whenever `next` emits
@@ -47,9 +46,9 @@ export function cache<T>(source: Observable<T>, next: Observable<any>) {
  *
  *   cachingRequest.subscribe(data => ... do something ...);
  */
-export function timerCache<T>(expirationPeriod = defaultExpirationPeriod) {
+export function createTimerCache<T>(expirationPeriod = defaultExpirationPeriod) {
   return (source: Observable<T>) =>
-    cache(
+    createCache(
       source,
       Observable.timer(0, expirationPeriod)
         .do(count => log('source executed #' + count))
@@ -92,7 +91,7 @@ export function timerCache<T>(expirationPeriod = defaultExpirationPeriod) {
  * @param {Function} [fetched] Optional function called when cache has fetched from the source
  * @param {number} [expirationPeriod=defaultExpirationPeriod] Expiration window.
  */
-export function onDemandCache<T> (
+export function createOnDemandCache<T> (
     source: Observable<T>,
     update: Observable<boolean>,
     fetched?: () => void,
@@ -104,7 +103,7 @@ export function onDemandCache<T> (
     if (!fetched) { fetched = () => {}; }
     expirationPeriod = (expirationPeriod == null) ? defaultExpirationPeriod : expirationPeriod;
 
-    return cache(
+    return createCache(
       source.do(data => {
         expired = Date.now() + expirationPeriod;
         log('Fetched ', data);

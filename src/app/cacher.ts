@@ -29,7 +29,7 @@ export class Cacher<T> {
     public fetched = () => {},
     public readonly expirationPeriod = Cacher.defaultExpirationPeriod
   ) {
-    this.cache = cacheFns.onDemandCache(source, this.updateSubject, fetched, expirationPeriod);
+    this.cache = cacheFns.createOnDemandCache(source, this.updateSubject, fetched, expirationPeriod);
   }
 
   /**
