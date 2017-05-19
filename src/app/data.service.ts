@@ -2,12 +2,8 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
 
 import 'rxjs/add/operator/delay';
-import 'rxjs/add/operator/filter';
-import 'rxjs/add/operator/let';
 import 'rxjs/add/operator/map';
 
 import { Cacher } from './cacher';
@@ -34,12 +30,17 @@ export class DataService {
 
     Cacher.verbose = true; // So we can see console logs
 
-    const heroSource = <Observable<Hero[]>>this.http.get(`/heroes.json`)
-      .map((response: Response) => response.json());
+    // ****************************************
+    // TODO: add error handling to the sources
+    const heroSource: Observable<Hero[]> =
+      this.http.get(`/heroes.json`)
+        .map((response: Response) => response.json());
 
-    const villainSource = <Observable<Villain[]>>this.http.get(`/villains.json`)
-      .delay(5000) // simulate latency
-      .map((response: Response) => response.json());
+    const villainSource: Observable<Villain[]> =
+      this.http.get(`/villains.json`)
+        .delay(5000) // simulate latency
+        .map((response: Response) => response.json());
+    // ****************************************
 
     this.heroCacher = new Cacher<Hero[]>(heroSource, countdownService.heroCountDownReset);
     this.villainCacher = new Cacher<Villain[]>(villainSource, countdownService.villainCountDownReset);
