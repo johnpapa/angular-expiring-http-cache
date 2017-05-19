@@ -1,12 +1,17 @@
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/first';
 
 /////// CachedResponse<T> ////////
 
+/** CachedResponse (aka, "package") returned by Cacher `get` methods. */
 export class CachedResponse<T> {
+  /** Error from source if it fails */
   error: any = undefined;
+
+  /** True if a "fetch" (execution of the source) is in progress. */
   fetching = false;
 
   constructor(public data: T, public expiration: number = 0) { }
@@ -15,13 +20,26 @@ export class CachedResponse<T> {
 /////// Cacher ////////
 
 export class Cacher<T> {
-  static defaultExpirationWindow = 30000;
+
+  /** Cached values expire after this period (ms) by default */
+  static defaultExpirationPeriod = 30000;
+
+  /** Whether to log Cacher activity to console. For debugging/demos. */
   static verbose = true;
 
+  /**
+   * Create instance of a Cacher which can cache and refresh an observable of type T
+   *
+   * @param {Observable<T>} source The observable source of values of type T
+   * @param { BehaviorSubject<CachedResponse<T>>} [subject] Optional subject that maintains cached value;
+   *  Creates its own subject if not defined.
+   * @param { number } expireAfter Cached values expire after this period.
+   *   Default is `Cacher.defaultExpirationPeriod`.
+   */
   static create<T>(
     source: Observable<T>,
     subject?: BehaviorSubject<CachedResponse<T>>,
-    expireAfter = Cacher.defaultExpirationWindow
+    expireAfter = Cacher.defaultExpirationPeriod
   ): Cacher<T> {
 
     if (!subject) {
@@ -30,7 +48,7 @@ export class Cacher<T> {
 
     // execute do() once for its potential side-effect:
     // running source again once and updating the subject with its value
-    const get = (force = false) =>
+    const getFromCacheOrSource = (force: boolean) =>
       subject
         .do(pkg => {
           if (pkg.fetching || (!force && pkg.expiration > Date.now())) {
@@ -56,25 +74,30 @@ export class Cacher<T> {
         .first()
         .subscribe(null, null, () => log('get completed'));
 
-    return new Cacher(get, () => subject);
+    return new Cacher(subject, getFromCacheOrSource);
   }
 
   private constructor(
-    /**
-     * Returns the observable of cached values.
-     * It also initiates a fetch if the cached value expired.
-     * Can force a fetch even if the cached value has not expired.
-     *
-     * @param {boolean} [force=false] forces a fetch that updates the cached value.
-     */
-    public readonly get: (forceFetch?: boolean) => void,
-
-    /**
-     *  Returns the observable of cached values (which some future call of `get` will update)
-     */
-    public readonly getCached: () => Observable<CachedResponse<T>>
+    private subject: BehaviorSubject<CachedResponse<T>>,
+    private getFromCacheOrSource: (force?: boolean) => Subscription
   ) { }
 
+  /**
+   *  Returns the observable of cached values (which a future call of `get` can update)
+   */
+  getFromCache(): Observable<CachedResponse<T>> { return this.subject; }
+
+  /**
+   * Returns the observable of cached values.
+   * It also initiates a fetch from source if the cached value expired.
+   * Can force a fetch even if the cached value has not expired.
+   *
+   * @param {boolean} [force=false] forces a fetch that updates the cached value.
+   */
+  get(force = false): Observable<CachedResponse<T>> {
+    this.getFromCacheOrSource(force);
+    return this.getFromCache();
+  };
 }
 
 function log(...args) {

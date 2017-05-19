@@ -31,13 +31,11 @@ export class DataService {
     this.heroCacher = Cacher.create<Hero[]>(heroSource);
   }
 
-  getVillains(force = false) {
-    this.villainCacher.get(force);
-    return this.villainCacher.getCached().filter(p => !p.fetching);
+  getHeroes(force = false) {
+    return this.heroCacher.get(force).filter(p => !p.fetching);
   }
 
-  getHeroes(force = false) {
-    this.heroCacher.get(force);
-    return this.heroCacher.getCached().filter(p => !p.fetching);
+  getVillains(force = false) {
+    return this.villainCacher.get(force).filter(p => !p.fetching);
   }
 }
