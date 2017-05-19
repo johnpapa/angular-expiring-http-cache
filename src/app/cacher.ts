@@ -15,7 +15,7 @@ export class Cacher<T> {
   /** Observable of cached values */
   readonly cache: Observable<T>;
 
-  private updateSubject = new Subject<boolean>();
+  private updateWhen = new Subject<boolean>();
 
   /**
    * Create instance of a Cacher which can cache and refresh an observable of type T
@@ -29,7 +29,7 @@ export class Cacher<T> {
     public fetched = () => {},
     public readonly expirationPeriod = Cacher.defaultExpirationPeriod
   ) {
-    this.cache = cacheFns.createOnDemandCache(source, this.updateSubject, fetched, expirationPeriod);
+    this.cache = cacheFns.createOnDemandCache(source, this.updateWhen, fetched, expirationPeriod);
   }
 
   /**
@@ -38,6 +38,6 @@ export class Cacher<T> {
    * @param {boolean} [force=false] Whether to force update from source
    */
   update(force = false) {
-    this.updateSubject.next(force);
+    this.updateWhen.next(force);
   }
 }

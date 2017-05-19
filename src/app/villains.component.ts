@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+
 import { Subscription } from 'rxjs/Subscription';
 
 import { Villain, DataService } from './data.service';
@@ -29,6 +29,9 @@ export class VillainsComponent implements OnInit, OnDestroy {
   title = 'Villains';
   villains: Villain[];
   selectedVillain: Villain;
+
+  // Prevent memory leaks with the unsubscribe pattern
+  // This is best when the component has only one subscribe
   private subscription: Subscription;
 
   constructor(private dataService: DataService) { }

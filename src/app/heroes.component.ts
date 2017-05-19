@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+
+import { Subject } from 'rxjs/Subject';
+import 'rxjs/add/operator/takeUntil';
 
 import { Hero, DataService } from './data.service';
 
@@ -30,17 +31,21 @@ export class HeroesComponent implements OnInit, OnDestroy {
   title = 'Heroes';
   heroes: Hero[];
   selectedHero: Hero;
-  private subscription: Subscription;
+
+  // Prevent memory leaks with the subject/takeUntil pattern
+  // This is best when the component has multiple subscribes
+  private onDestroy = new Subject();
 
   constructor(private dataService: DataService) { }
 
   ngOnInit() {
-    this.subscription = this.dataService.getHeroes()
+    this.dataService.getHeroes()
+      .takeUntil(this.onDestroy)
       .subscribe(heroes => this.heroes = heroes);
   }
 
   ngOnDestroy() {
-    this.subscription.unsubscribe();
+    this.onDestroy.next();
   }
 
   refresh() {
