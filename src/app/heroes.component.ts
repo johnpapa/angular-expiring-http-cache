@@ -33,8 +33,7 @@ export class HeroesComponent implements OnInit {
   constructor(private dataService: DataService) { }
 
   ngOnInit() {
-    this.dataService.getHeroes()
-      .subscribe(pkg => this.heroes = pkg.data);
+    this.dataService.getHeroes().subscribe(heroes => this.heroes = heroes);
   }
 
   refresh() {

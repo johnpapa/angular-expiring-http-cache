@@ -7,6 +7,8 @@ import { Component } from '@angular/core';
     <app-nav></app-nav>
     <div class="content">
       <router-outlet></router-outlet>
+      <hr>
+      <app-cache-counter></app-cache-counter>
     </div>
   </div>
   `

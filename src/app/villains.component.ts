@@ -32,8 +32,7 @@ export class VillainsComponent implements OnInit {
   constructor(private dataService: DataService) { }
 
   ngOnInit() {
-    this.dataService.getVillains()
-      .subscribe(pkg => this.villains = pkg.data);
+    this.dataService.getVillains().subscribe(villains => this.villains = villains);
   }
 
   selectVillain(villain: Villain) {

@@ -6,7 +6,7 @@ import 'rxjs/add/operator/first';
 
 /////// CachedResponse<T> ////////
 
-/** CachedResponse (aka, "package") returned by Cacher `get` methods. */
+/** CachedResponse returned by Cacher `get` methods. */
 export class CachedResponse<T> {
   /** Error from source if it fails */
   error: any = undefined;
@@ -25,10 +25,10 @@ export class Cacher<T> {
   static defaultExpirationPeriod = 30000;
 
   /** Whether to log Cacher activity to console. For debugging/demos. */
-  static verbose = true;
+  static verbose = false;
 
   /** Observable representation of the private caching subject */
-  private cache: Observable<CachedResponse<T>>;
+  private readonly cache: Observable<CachedResponse<T>>;
 
   /**
    * Create instance of a Cacher which can cache and refresh an observable of type T
@@ -53,23 +53,23 @@ export class Cacher<T> {
     // running source again once and updating the subject with its value
     const getFromCacheOrSource = (force: boolean) =>
       subject
-        .do(pkg => {
-          if (pkg.fetching || (!force && pkg.expiration > Date.now())) {
-            log(pkg.fetching ? 'Fetching ...' : 'Using cached data');
+        .do(cr => {
+          if (cr.fetching || (!force && cr.expiration > Date.now())) {
+            log(cr.fetching ? 'Fetching ...' : 'Using cached data');
             return;
           }
 
           // emit the same cached data but show we're fetching
-          subject.next({ ...pkg, ...{ fetching: true } });
+          subject.next({ ...cr, ...{ fetching: true } });
 
           source
             .first() // ensure only execute source once
             .subscribe(data => {
-              const newPkg = new CachedResponse<T>(data, Date.now() + expireAfter);
-              log('Fetching fresh data ...', newPkg);
-              return subject.next(newPkg);
+              const newCr = new CachedResponse<T>(data, Date.now() + expireAfter);
+              log('Fetching fresh data ...', newCr);
+              return subject.next(newCr);
             },
-            error => subject.next({ ...pkg, ...{ fetching: false, error } }),
+            error => subject.next({ ...cr, ...{ fetching: false, error } }),
             () => log('Fetch completed')
             );
         })
@@ -77,12 +77,14 @@ export class Cacher<T> {
         .first()
         .subscribe(null, null, () => log('get completed'));
 
-    return new Cacher(subject, getFromCacheOrSource);
+    return new Cacher(source, subject, expireAfter, getFromCacheOrSource);
   }
 
   private constructor(
-    private subject: BehaviorSubject<CachedResponse<T>>,
-    private getFromCacheOrSource: (force: boolean) => Subscription
+    public readonly source,
+    private readonly subject: BehaviorSubject<CachedResponse<T>>,
+    public readonly expireAfter,
+    private readonly getFromCacheOrSource: (force: boolean) => Subscription
   ) {
     this.cache = subject.asObservable(); // because shouldn't expose subject directly
   }
