@@ -54,11 +54,7 @@ export class Cacher<T> {
         })
         // execute do() only once; the returned value is irrelevant
         .first()
-        .subscribe(
-          null, // x => log('get next', x),
-          null,
-          () => log('get completed')
-        );
+        .subscribe(null, null, () => log('get completed'));
 
     return new Cacher(get, () => subject);
   }
