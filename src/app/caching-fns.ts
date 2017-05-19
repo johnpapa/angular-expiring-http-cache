@@ -8,27 +8,24 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 
 /* Whether to log caching activity to console. For debugging/demos. */
-export let _verbose = true;
-export function setVerbose(value: boolean) { _verbose = value; }
+export let verbose = true;
+export function setVerbose(value: boolean) { verbose = value; }
 
 /** Cached values expire after this period (ms) by default */
 export const defaultExpirationPeriod = 3000;
 
 /**
  * Cache values and update from source whenever next emits
- * @param {Observable<T>} source
- * @param {Observable<any>} next
+ * @param {Observable<T>} source The async source of the data
+ * @param {Observable<any>} update When this observable emits, update the cache from the source
  */
-export function createCache<T>(source: Observable<T>, next: Observable<any>) {
+export function createCache<T>(source: Observable<T>, updateWhen: Observable<any>) {
   const cacheSubject = new ReplaySubject(1);
 
   // get from the source whenever `next` emits
-  next
-  .switchMap(() => source.first())
-  .subscribe(
-     data => cacheSubject.next(data)
-    // Todo: add error handling
-  );
+  updateWhen
+    .switchMap(() => source.first())
+    .subscribe(data => cacheSubject.next(data)); // Todo: add error handling
 
   return cacheSubject.asObservable();
 };
@@ -91,36 +88,37 @@ export function createTimerCache<T>(expirationPeriod = defaultExpirationPeriod) 
  * @param {Function} [fetched] Optional function called when cache has fetched from the source
  * @param {number} [expirationPeriod=defaultExpirationPeriod] Expiration window.
  */
-export function createOnDemandCache<T> (
-    source: Observable<T>,
-    update: Observable<boolean>,
-    fetched?: () => void,
-    expirationPeriod?: number
-  ): Observable<T> {
-    let expired = 0;
-    let firstTime = true;
+export function createOnDemandCache<T>(
+  source: Observable<T>,
+  updateWhen: Observable<boolean>,
+  notifier?: () => void,
+  expirationPeriod?: number
+): Observable<T> {
+  let expired = 0;
+  let firstTime = true;
 
-    if (!fetched) { fetched = () => {}; }
-    expirationPeriod = (expirationPeriod == null) ? defaultExpirationPeriod : expirationPeriod;
+  if (!notifier) { notifier = () => { }; }
+  expirationPeriod = (expirationPeriod == null) ? defaultExpirationPeriod : expirationPeriod;
 
-    return createCache(
-      source.do(data => {
-        expired = Date.now() + expirationPeriod;
-        log('Fetched ', data);
-        fetched();
-      }),
+  return createCache(
 
-     update
+    source.do(data => {
+      expired = Date.now() + expirationPeriod;
+      notifier();
+      log('Fetched ', data);
+    }),
+
+    updateWhen
       .map(force => firstTime || force || expired < Date.now())
-      .filter(fetch => {
+      .filter(fetch => { // filter out all false conditions
         firstTime = false;
-        log( fetch ? 'Fetching...' : 'Use cached value');
+        log(fetch ? 'Fetching...' : 'Use cached value');
         return fetch;
       })
-    );
+  );
 };
 
 // logger logs to console when verbose == true
 function log(...args) {
-  if (_verbose) { console.log.apply(null, args); }
+  if (verbose) { console.log.apply(null, args); }
 }

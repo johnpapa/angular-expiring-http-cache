@@ -6,7 +6,7 @@ import * as cacheFns from './caching-fns';
 export class Cacher<T> {
 
   /** Whether to log Cacher activity to console. For debugging/demos. */
-  static get verbose() { return cacheFns._verbose; };
+  static get verbose() { return cacheFns.verbose; };
   static set verbose(value: boolean) { cacheFns.setVerbose(value); };
 
   /** Cached values expire after this period (ms) by default */
