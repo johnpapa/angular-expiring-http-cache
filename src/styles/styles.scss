@@ -73,10 +73,8 @@ md-list-item.mat-list-item span {
   @include selected-style;
 }
 
-.footer {
-  bottom: 0;
-  position: fixed;
+.counter {
   & span {
-    font-size:16px;
+    font-size:14px;
   }
 }

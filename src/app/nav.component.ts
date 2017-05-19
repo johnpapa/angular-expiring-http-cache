@@ -16,6 +16,10 @@ import { Component, OnInit } from '@angular/core';
       routerLinkActive="router-link-active"><span>Villains</span></a>
     <a fxFlex md-button href="http://johnpapa.net" target="_blank"><span>John Papa / Ward Bell</span></a>
   </div>
+  <md-toolbar-row>
+    <app-cache-countdown></app-cache-countdown>
+  </md-toolbar-row>
+
 </md-toolbar>
   `
 })
