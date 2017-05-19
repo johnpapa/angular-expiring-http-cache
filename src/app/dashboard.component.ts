@@ -1,7 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-
-import { DataService } from './data.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,15 +6,9 @@ import { DataService } from './data.service';
     <div>
       <h2 md-header>{{title}}</h2>
     </div>
-    TODO:Write up instructions on how this demo works
+    TODO: Write instructions on how this demo works
   `
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
   title = 'Dashboard';
-
-  constructor(private dataService: DataService) { }
-
-  ngOnInit() {
-
-  }
 }

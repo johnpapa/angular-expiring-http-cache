@@ -38,7 +38,7 @@ export class DataService {
 
     const villainSource: Observable<Villain[]> =
       this.http.get(`/villains.json`)
-        .delay(5000) // simulate latency
+        .delay(3000) // simulate network/server latency
         .map((response: Response) => response.json());
     // ****************************************
 

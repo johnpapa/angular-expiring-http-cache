@@ -65,17 +65,17 @@ export function createTimerCache<T>(expirationPeriod = defaultExpirationPeriod) 
  *     .map(res => res.json().data);
  *
  *   // subject that controls when and how to update the cache
- *   const updateSubject = new ReplaySubject<boolean>(1);
+ *   const updateWhen = new ReplaySubject<boolean>(1);
  *
- *   // create the onDemand caching observable, controlled by the updateSubject
- *   // updateSubject is also the update observable
- *   const example = onDemandCache(source, updateSubject);
+ *   // create the onDemand caching observable, controlled by the updateWhen subject.
+ *   // The `updateWhen`, like all subjects, is also an observable
+ *   const example = onDemandCache(source, updateWhen);
  *
  *   // sequence of cached values
  *   example.subscribe(data => ...);
  *
  *   // update helper method
- *   const update(force = false) => updateSubject.next(force);
+ *   const update(force = false) => updateWhen.next(force);
  *
  *   // force an update of the cache from source
  *   update(true);
