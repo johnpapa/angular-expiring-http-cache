@@ -42,8 +42,8 @@ export class DataService {
         .map((response: Response) => response.json());
     // ****************************************
 
-    this.heroCacher = new Cacher<Hero[]>(heroSource, countdownService.heroCountDownReset);
-    this.villainCacher = new Cacher<Villain[]>(villainSource, countdownService.villainCountDownReset);
+    this.heroCacher = new Cacher(heroSource, countdownService.heroCountDownReset);
+    this.villainCacher = new Cacher(villainSource, countdownService.villainCountDownReset);
   }
 
   getHeroes(force = false) {
