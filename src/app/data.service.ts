@@ -33,8 +33,8 @@ export class DataService {
     const heroSource = <Observable<Hero[]>>this.http.get(`/heroes.json`)
       .map((response: Response) => response.json());
 
-    this.villainCacher = Cacher.create<Villain[]>(villainSource);
-    this.heroCacher = Cacher.create<Hero[]>(heroSource);
+    this.villainCacher = new Cacher<Villain[]>(villainSource);
+    this.heroCacher = new Cacher<Hero[]>(heroSource);
   }
 
   getHeroes(force = false) {
