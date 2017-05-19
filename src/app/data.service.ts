@@ -2,11 +2,17 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import { ReplaySubject } from 'rxjs/ReplaySubject';
+
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/let';
 import 'rxjs/add/operator/map';
 
 import { Cacher } from './cacher';
+import { demandCacher } from './cacher2';
+
 import { CountDownService } from './countdown.service';
 
 export class Hero {
@@ -21,6 +27,10 @@ export class Villain {
 export class DataService {
   private heroCacher: Cacher<Hero[]>;
   private villainCacher: Cacher<Villain[]>;
+
+  private nextHero = new ReplaySubject<boolean>();
+  private hero2: Observable<Hero[]>;
+  private hero2Started = false;
 
   constructor(
     private countdownService: CountDownService,
@@ -37,6 +47,19 @@ export class DataService {
 
     this.villainCacher = new Cacher<Villain[]>(villainSource);
     this.heroCacher = new Cacher<Hero[]>(heroSource);
+
+    this.hero2 = demandCacher(
+      heroSource,
+      this.nextHero,
+      countdownService.hero2CountDownReset);
+  }
+
+  getHeroes2(force = false) {
+    this.countdownService.startHero2Counter();
+    force = force || !this.hero2Started;
+    this.hero2Started = true;
+    this.nextHero.next(force);
+    return this.hero2;
   }
 
   getHeroes(force = false) {

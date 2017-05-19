@@ -18,14 +18,37 @@ export class CountDownService implements OnDestroy {
   onDestroy = new Subject();
 
   heroCountDown = new BehaviorSubject(0);
-  heroCountDownStarted = false;
+  private heroCountDownStarted = false;
+
+  hero2CountDown = new BehaviorSubject(0);
+  private hero2CountDownResetSubject = new Subject();
+  private hero2CountDownStarted = false;
 
   villainCountDown = new BehaviorSubject(0);
-  villainCountDownStarted = false;
+  private villainCountDownStarted = false;
+
 
   ngOnDestroy() {
     this.onDestroy.next();
   }
+
+  startHero2Counter() {
+    // only start it once
+    if (!this.hero2CountDownStarted) {
+      this.hero2CountDownStarted = true;
+
+      Observable.timer(0, 1000)
+        .filter(i => i <= 30)
+        .map(i => this.hero2CountDown.next(30 - i))
+        .takeUntil(this.hero2CountDownResetSubject)
+        .repeat()
+        .takeUntil(this.onDestroy)
+        .subscribe();
+    }
+    return this.hero2CountDownResetSubject;
+  }
+
+  hero2CountDownReset = () => this.hero2CountDownResetSubject.next();
 
   startHeroCounter(heroCacher: Cacher<any>) {
     // only start it once
@@ -40,6 +63,8 @@ export class CountDownService implements OnDestroy {
     this.villainCountDownStarted = true;
     this.startCounter(villainCacher, this.villainCountDown);
   }
+
+  /////////////////
 
   private startCounter(cacher: Cacher<any>, countDown: Subject<number>) {
     const reset = new Subject();

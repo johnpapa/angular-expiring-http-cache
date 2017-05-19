@@ -33,11 +33,11 @@ export class HeroesComponent implements OnInit {
   constructor(private dataService: DataService) { }
 
   ngOnInit() {
-    this.dataService.getHeroes().subscribe(heroes => this.heroes = heroes);
+    this.dataService.getHeroes2().subscribe(heroes => this.heroes = heroes);
   }
 
   refresh() {
-    this.dataService.getHeroes(true);
+    this.dataService.getHeroes2(true);
   }
 
   selectHero(hero: Hero) {
