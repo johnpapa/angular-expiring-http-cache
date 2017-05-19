@@ -27,6 +27,9 @@ export class Cacher<T> {
   /** Whether to log Cacher activity to console. For debugging/demos. */
   static verbose = true;
 
+  /** Observable representation of the private caching subject */
+  private cache: Observable<CachedResponse<T>>;
+
   /**
    * Create instance of a Cacher which can cache and refresh an observable of type T
    *
@@ -79,20 +82,22 @@ export class Cacher<T> {
 
   private constructor(
     private subject: BehaviorSubject<CachedResponse<T>>,
-    private getFromCacheOrSource: (force?: boolean) => Subscription
-  ) { }
+    private getFromCacheOrSource: (force: boolean) => Subscription
+  ) {
+    this.cache = subject.asObservable(); // because shouldn't expose subject directly
+  }
 
   /**
-   *  Returns the observable of cached values (which a future call of `get` can update)
+   *  Returns the observable of cached values (which a future call of `get()` may update)
    */
-  getFromCache(): Observable<CachedResponse<T>> { return this.subject; }
+  getFromCache(): Observable<CachedResponse<T>> { return this.cache; }
 
   /**
    * Returns the observable of cached values.
    * It also initiates a fetch from source if the cached value expired.
    * Can force a fetch even if the cached value has not expired.
    *
-   * @param {boolean} [force=false] forces a fetch that updates the cached value.
+   * @param {boolean} [force=false] forces a fetch that updates the cached observable.
    */
   get(force = false): Observable<CachedResponse<T>> {
     this.getFromCacheOrSource(force);
