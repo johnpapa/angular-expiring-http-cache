@@ -23,6 +23,7 @@ import { CountDownComponent } from './countdown.component';
 import { CountDownService } from './countdown.service';
 import { DashboardComponent } from './dashboard.component';
 import { DataService } from './data.service';
+import { FooterComponent } from './footer.component';
 import { HeroesComponent } from './heroes.component';
 import { NavComponent } from './nav.component';
 import { VillainsComponent } from './villains.component';
@@ -49,6 +50,7 @@ import { VillainsComponent } from './villains.component';
     AppComponent,
     CountDownComponent,
     DashboardComponent,
+    FooterComponent,
     HeroesComponent,
     NavComponent,
     VillainsComponent,

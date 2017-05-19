@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-nav',
   template: `
-<md-toolbar color="primary" class="dark">
+<md-toolbar color="primary">
   <div class="md-toolbar-tools" fxLayout="row nowrap" fxFlex fxLayoutAlign="end center">
     <a class="ng-title-icon" href="http://angular.io" target="_blank"><i></i></a>
     <span fxFlex class="title">Data Caching</span>

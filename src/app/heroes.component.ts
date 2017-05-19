@@ -10,9 +10,9 @@ import { Hero, DataService } from './data.service';
     <md-progress-bar class="progress" color="accent" mode="indeterminate"></md-progress-bar>
   </ng-template>
 
+  <h2 md-header>{{title}}</h2>
   <div *ngIf="heroes;else noHeroes">
     <md-list>
-      <h2 md-header>{{title}}</h2>
       <button md-button color="primary" (click)="refresh()">Refresh now</button>
       <md-list-item *ngFor="let hero of heroes"
         [class.selected]="hero===selectedHero"

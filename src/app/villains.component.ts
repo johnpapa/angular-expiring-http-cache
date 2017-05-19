@@ -10,9 +10,9 @@ import { Villain, DataService } from './data.service';
       <md-progress-bar class="progress" color="accent" mode="indeterminate"></md-progress-bar>
     </ng-template>
 
+    <h2 md-header>{{title}}</h2>
     <div *ngIf="villains;else noVillains">
       <md-list>
-        <h2 md-header>{{title}}</h2>
         <md-list-item *ngFor="let villain of villains"
           [class.selected]="selectedVillain === villain"
           (click)="selectVillain(villain)">
