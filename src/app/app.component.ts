@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
     <div class="content">
       <router-outlet></router-outlet>
       <hr>
-      <app-cache-counter></app-cache-counter>
+      <app-cache-countdown></app-cache-countdown>
     </div>
   </div>
   `

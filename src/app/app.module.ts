@@ -19,12 +19,13 @@ import {
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NavComponent } from './nav.component';
+import { CountDownComponent } from './countdown.component';
+import { CountDownService } from './countdown.service';
+import { DashboardComponent } from './dashboard.component';
 import { DataService } from './data.service';
 import { HeroesComponent } from './heroes.component';
-import { DashboardComponent } from './dashboard.component';
+import { NavComponent } from './nav.component';
 import { VillainsComponent } from './villains.component';
-import { CacheCounterComponent } from './cache-counter.component';
 
 @NgModule({
   imports: [
@@ -46,13 +47,16 @@ import { CacheCounterComponent } from './cache-counter.component';
   ],
   declarations: [
     AppComponent,
-    CacheCounterComponent,
+    CountDownComponent,
     DashboardComponent,
-    VillainsComponent,
     HeroesComponent,
     NavComponent,
+    VillainsComponent,
   ],
-  providers: [DataService],
+  providers: [
+    CountDownService,
+    DataService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

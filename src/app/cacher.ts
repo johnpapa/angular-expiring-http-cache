@@ -66,16 +66,16 @@ export class Cacher<T> {
             .first() // ensure only execute source once
             .subscribe(data => {
               const newCr = new CachedResponse<T>(data, Date.now() + expireAfter);
-              log('Fetching fresh data ...', newCr);
+              log('Fetched fresh data', newCr);
               return subject.next(newCr);
             },
             error => subject.next({ ...cr, ...{ fetching: false, error } }),
-            () => log('Fetch completed')
+            () => log('Fetch observable completed')
             );
         })
         // execute do() only once; the returned value is irrelevant
         .first()
-        .subscribe(null, null, () => log('get completed'));
+        .subscribe(null, null, () => log('getFromCacheOrSource completed'));
 
     return new Cacher(source, subject, expireAfter, getFromCacheOrSource);
   }
