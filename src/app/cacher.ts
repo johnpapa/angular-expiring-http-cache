@@ -1,11 +1,7 @@
 import { Observable } from 'rxjs/Observable';
-import * as cacheFns from './caching-fns';
+import { Subject } from 'rxjs/Subject';
 
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { ReplaySubject } from 'rxjs/ReplaySubject';
-import { Subscription } from 'rxjs/Subscription';
-import 'rxjs/add/operator/do';
-import 'rxjs/add/operator/first';
+import * as cacheFns from './caching-fns';
 
 export class Cacher<T> {
 
@@ -19,7 +15,7 @@ export class Cacher<T> {
   /** Observable of cached values */
   readonly cache: Observable<T>;
 
-  private nextSubject = new ReplaySubject<boolean>();
+  private updateSubject = new Subject<boolean>();
 
   /**
    * Create instance of a Cacher which can cache and refresh an observable of type T
@@ -33,7 +29,7 @@ export class Cacher<T> {
     public fetched = () => {},
     public readonly expirationPeriod = Cacher.defaultExpirationPeriod
   ) {
-    this.cache = cacheFns.onDemandCache(source, this.nextSubject, fetched, expirationPeriod);
+    this.cache = cacheFns.onDemandCache(source, this.updateSubject, fetched, expirationPeriod);
   }
 
   /**
@@ -42,6 +38,6 @@ export class Cacher<T> {
    * @param {boolean} [force=false] Whether to force update from source
    */
   update(force = false) {
-    this.nextSubject.next(force);
+    this.updateSubject.next(force);
   }
 }
