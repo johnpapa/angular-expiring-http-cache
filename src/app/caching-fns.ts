@@ -41,11 +41,11 @@ export function createCache<T>(source: Observable<T>, updateWhen: Observable<any
  *
  * Example:
  *
- *   const cachingRequest = this.http.get('hero.json')
+ *   const timerCache = this.http.get('hero.json')
  *     .map(res => res.json().data)
- *     .let(timerCache());
+ *     .let(createTimerCache());
  *
- *   cachingRequest.subscribe(data => ... do something ...);
+ *   timerCache.subscribe(data => ... do something ...);
  */
 export function createTimerCache<T>(expirationPeriod = defaultExpirationPeriod) {
   return (source: Observable<T>) =>
@@ -136,9 +136,9 @@ export class NotificationMessage {
     }
 }
 
-function NullNotifier(msg: NotificationMessage) { }
+export function NullNotifier(msg: NotificationMessage) { }
 
 // logger logs to console when verbose == true
-function log(...args) {
+export function log(...args) {
   if (_verbose) { console.log.apply(null, args); }
 }
