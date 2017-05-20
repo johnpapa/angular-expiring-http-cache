@@ -8,11 +8,15 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/switchMap';
 
 /* Whether to log caching activity to console. For debugging/demos. */
-export let verbose = true;
-export function setVerbose(value: boolean) { verbose = value; }
+let _verbose = true;
+export function getVerbose() { return _verbose; }
+export function setVerbose(value: boolean) { _verbose = value; }
 
 /** Cached values expire after this period (ms) by default */
 export const defaultExpirationPeriod = 3000;
+
+/** Caching event notification callback */
+export type Notifier = (msg: NotificationMessage) => void;
 
 /**
  * Cache values and update from source whenever next emits
@@ -83,42 +87,58 @@ export function createTimerCache<T>(expirationPeriod = defaultExpirationPeriod) 
  *   // update cache from source if expired
  *   update();
  *
- * @param {Observable<T>} source Async source of values
- * @param {Observable<boolean>} update The "demand" observable that may update the cache
- * @param {Function} [fetched] Optional function called when cache has fetched from the source
+ * @param {Observable<T>} source Async source of values.
+ * @param {Observable<boolean>} update The "demand" observable that may update the cache.
+ * @param {Notifier} [notifier] Optional. Called with caching activity messages.
  * @param {number} [expirationPeriod=defaultExpirationPeriod] Expiration window.
  */
 export function createOnDemandCache<T>(
   source: Observable<T>,
   updateWhen: Observable<boolean>,
-  notifier?: () => void,
+  notifier?: Notifier,
   expirationPeriod?: number
 ): Observable<T> {
   let expired = 0;
   let firstTime = true;
 
-  if (!notifier) { notifier = () => { }; }
+  if (!notifier) { notifier = NullNotifier; }
   expirationPeriod = (expirationPeriod == null) ? defaultExpirationPeriod : expirationPeriod;
 
   return createCache(
 
     source.do(data => {
       expired = Date.now() + expirationPeriod;
-      notifier();
-      log('Fetched ', data);
+      notifier(new NotificationMessage('fetched', 'Fetched', data));
     }),
 
     updateWhen
       .map(force => firstTime || force || expired < Date.now())
-      .filter(fetch => { // filter out all false conditions
+
+      // filter out all false conditions
+      .filter(fetch => {
         firstTime = false;
-        log(fetch ? 'Fetching...' : 'Use cached value');
+        notifier(fetch ?
+          new NotificationMessage('fetching', 'Fetching...') :
+          new NotificationMessage('cached', 'Use cached value.' )
+        );
         return fetch;
       })
   );
 };
 
+/** Message provided to notifiers. */
+export class NotificationMessage {
+  constructor(
+    public type: 'cached' | 'fetching' | 'fetched' | 'error',
+    public message?: string,
+    public body?: any) {
+      body ? log(message, body) : log(message);
+    }
+}
+
+function NullNotifier(msg: NotificationMessage) { }
+
 // logger logs to console when verbose == true
 function log(...args) {
-  if (verbose) { console.log.apply(null, args); }
+  if (_verbose) { console.log.apply(null, args); }
 }

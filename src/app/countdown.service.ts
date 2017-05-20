@@ -36,20 +36,21 @@ export class CountDownService implements OnDestroy {
     // only start it once
     if (this.heroCountDownStarted) { return; }
     this.heroCountDownStarted = true;
-    this.startCounter(heroCacher, this.heroCountDown, this.heroCountDownResetSubject);
+    this.startCounter(heroCacher, this.heroCountDown);
   }
 
   startVillainCounter(villainCacher: Cacher<any>) {
     // only start it once
     if (this.villainCountDownStarted) { return; }
     this.villainCountDownStarted = true;
-    this.startCounter(villainCacher, this.villainCountDown, this.villainCountDownResetSubject);
+    this.startCounter(villainCacher, this.villainCountDown);
   }
 
   /////////////////
 
-  private startCounter(cacher: Cacher<any>, countDown: Subject<number>, reset: Observable<any>) {
+  private startCounter(cacher: Cacher<any>, countDown: Subject<number>) {
     const expireAfter = cacher.expirationPeriod / 1000;
+    const reset = cacher.notifications.filter(n => n.type === 'fetched');
 
     Observable.timer(0, 1000)
       .filter(i => i <= expireAfter)
