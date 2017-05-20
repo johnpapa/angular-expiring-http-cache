@@ -48,12 +48,17 @@ export function createCache<T>(source: Observable<T>, updateWhen: Observable<any
  *   timerCache.subscribe(data => ... do something ...);
  */
 export function createTimerCache<T>(expirationPeriod = defaultExpirationPeriod) {
+  let timerOn = true;
   return (source: Observable<T>) =>
     createCache(
       source,
       Observable.timer(0, expirationPeriod)
+        .filter(() => timerOn)
         .do(count => log('source executed #' + count))
-    );
+    )
+    .do(() => timerOn = true )
+    .finally(() => timerOn = false )
+    .share();
 }
 
 /*
