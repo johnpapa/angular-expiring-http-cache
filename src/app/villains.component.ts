@@ -7,22 +7,16 @@ import { Villain, DataService } from './data.service';
 @Component({
   selector: 'app-villains',
   template: `
-    <ng-template #noVillains>
-      <md-progress-bar class="progress" color="accent" mode="indeterminate"></md-progress-bar>
-    </ng-template>
-
     <h2 md-header>{{title}}</h2>
-    <div *ngIf="villains;else noVillains">
-      <md-list>
-        <md-list-item *ngFor="let villain of villains"
-          [class.selected]="selectedVillain === villain"
-          (click)="selectVillain(villain)">
-          <p md-line>
-            <span>{{villain.name}}</span>
-          </p>
-        </md-list-item>
-      </md-list>
-    </div>
+    <md-list>
+      <md-list-item *ngFor="let villain of villains"
+        [class.selected]="selectedVillain === villain"
+        (click)="selectVillain(villain)">
+        <p md-line>
+          <span>{{villain.name}}</span>
+        </p>
+      </md-list-item>
+    </md-list>
   `
 })
 export class VillainsComponent implements OnInit, OnDestroy {

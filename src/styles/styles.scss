@@ -62,11 +62,12 @@ md-list-item.mat-list-item span {
     font-size: 14px;
 }
 
-.progress {
+md-progress-bar {
+  position: absolute !important;
+  top: 0px;
+  z-index: 1000;
   display: flex;
   align-content: center;
-  align-items: center;
-  margin: 2em 0em;
 }
 
 .snack {

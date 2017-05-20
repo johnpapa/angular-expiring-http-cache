@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 
 import { Observable } from 'rxjs/Observable';
-
+import { combineLatest} from 'rxjs/observable/combineLatest';
 import 'rxjs/add/operator/delay';
 import 'rxjs/add/operator/map';
 
@@ -24,6 +24,9 @@ export class DataService {
   private heroCacher: Cacher<Hero[]>;
   private villainCacher: Cacher<Villain[]>;
 
+  /** Observable is true if any of the cached sources is fetching */
+  isFetching: Observable<boolean>;
+
   constructor(
     private countdownService: CountDownService,
     private http: Http) {
@@ -42,8 +45,14 @@ export class DataService {
         .map((response: Response) => response.json());
     // ****************************************
 
-    this.heroCacher = new Cacher(heroSource, countdownService.heroCountDownReset);
-    this.villainCacher = new Cacher(villainSource, countdownService.villainCountDownReset);
+    this.heroCacher = new Cacher(heroSource);
+    this.villainCacher = new Cacher(villainSource);
+
+    this.isFetching = combineLatest(
+      this.heroCacher.notifications,
+      this.villainCacher.notifications,
+      (h, v) => h.type === 'fetching' || v.type === 'fetching'
+    );
   }
 
   getHeroes(force = false) {
