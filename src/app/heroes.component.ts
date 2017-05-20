@@ -24,7 +24,6 @@ import { Hero, DataService } from './data.service';
 export class HeroesComponent implements OnInit, OnDestroy {
   title = 'Heroes';
   heroes: Hero[];
-  isFetching: false;
   selectedHero: Hero;
 
   // Prevent memory leaks with the subject/takeUntil pattern
